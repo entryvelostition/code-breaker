@@ -225,7 +225,30 @@
           'System override',
           'Good job'
         ]
-      }
+      },
+      {
+        name: 'Caesar cipher',
+        description: 'Each letter has been shifted by a fixed number of positions in the alphabet. Figure out the shift and decode the message.',
+        encode: (text) => {
+            const shift = Math.floor(Math.random() * 5) + 3; // shift 3-7
+          return text.split('').map(char => {
+            if (char.match(/[a-z]/)) {
+              return String.fromCharCode(((char.charCodeAt(0) - 97 + shift) % 26) + 97);
+            }
+            if (char.match(/[A-Z]/)) {
+              return String.fromCharCode(((char.charCodeAt(0) - 65 + shift) % 26) + 65);
+            }
+            return char;
+          }).join('');
+        },
+        messages: [
+            'Attack at dawn',
+            'The password is secret',
+            'Meet me at midnight',
+            'Send backup now',
+            'Enemy spotted ahead'
+        ]
+    }
     ];
 
     // just state
@@ -275,7 +298,12 @@
         feedback.textContent = '>> DECRYPTED SUCCESSFULLY';
         feedback.className = 'feedback correct';
         setTimeout(() => {
-          loadLevel();
+            currentLevel++;
+            if (currentLevel < levels.length) {
+                loadLevel();
+            } else {
+                alert('You win! All ciphers cracked');
+            }
         }, 1500);
       } else {
         feedback.textContent = '>> DECRYPTION FAILED — try again';
