@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Breaker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+      <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #0a0e17;
+      color: #c8d6e5;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .screen {
+      display: none;
+      text-align: center;
+      padding: 40px;
+      max-width: 600px;
+      width: 90%;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .title {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 48px;
+      color: #00d4ff;
+      letter-spacing: 3px;
+      margin-bottom: 8px;
+      text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    }
+
+    .subtitle {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 14px;
+      color: #5a7a9a;
+      margin-bottom: 40px;
+    }
+
+    .description {
+      font-size: 18px;
+      color: #8fa8c2;
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .btn {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 16px;
+      padding: 12px 32px;
+      border: 1px solid #00d4ff;
+      background: transparent;
+      color: #00d4ff;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s;
+      letter-spacing: 1px;
+    }
+
+    .btn:hover {
+      background: #00d4ff;
+      color: #0a0e17;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+    }
+
+    .ascii-art {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: #1e3a5f;
+      white-space: pre;
+      margin-bottom: 24px;
+      line-height: 1.2;
+    }
+  </style>
+</head>
+<body>
+     <div class="screen active" id="title-screen">
+    <div class="ascii-art">
+ ██████╗ ██████╗ ██████╗ ███████╗
+██╔════╝██╔═══██╗██╔══██╗██╔════╝
+██║     ██║   ██║██║  ██║█████╗  
+██║     ██║   ██║██║  ██║██╔══╝  
+╚██████╗╚██████╔╝██████╔╝███████╗
+ ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝
+    </div>
+    <h1 class="title">CODE BREAKER</h1>
+    <p class="subtitle">[ decrypt the intercepted messages ]</p>
+    <p class="description">
+      You've intercepted encrypted transmissions. 
+      Each level is a new cipher, crack them all to prove your skills.
+    </p>
+    <button class="btn" onclick="startGame()">INITIATE &gt;&gt;</button>
+  </div>
+
+  <script>
+    function startGame() {
+        //just log
+        console.log('Game started');
+    }
+  </script>
+</body>
+</html>
