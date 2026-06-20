@@ -207,6 +207,7 @@
       <button class="btn" onclick="checkAnswer()">DECODE</button>
     </div>
     
+    <button class="btn" onclick="showHint()" id="hint-btn" style="margin-bottom: 12px; font-size: 13px; padding: 8px 16px; border-color: #5a7a9a; color: #5a7a9a;">HINT</button>
     <p class="feedback" id="feedback"></p>
   </div>
 
@@ -224,13 +225,14 @@
           'Decrypt this now',
           'System override',
           'Good job'
-        ]
+        ],
+        hint: 'Try reading the message from right to left.'
       },
       {
-        name: 'Caesar cipher',
+        name: 'Caesar Cipher',
         description: 'Each letter has been shifted by a fixed number of positions in the alphabet. Figure out the shift and decode the message.',
         encode: (text) => {
-            const shift = Math.floor(Math.random() * 5) + 3; // shift 3-7
+          const shift = Math.floor(Math.random() * 5) + 3;
           return text.split('').map(char => {
             if (char.match(/[a-z]/)) {
               return String.fromCharCode(((char.charCodeAt(0) - 97 + shift) % 26) + 97);
@@ -242,19 +244,45 @@
           }).join('');
         },
         messages: [
-            'Attack at dawn',
-            'The password is secret',
-            'Meet me at midnight',
-            'Send backup now',
-            'Enemy spotted ahead'
-        ]
-    }
+          'Attack at dawn',
+          'The password is secret',
+          'Meet me at midnight',
+          'Send backup now',
+          'Enemy spotted ahead'
+        ],
+        hint: 'Try shifting each letter back by 3-7 positions.'
+      },
+      {
+        name: 'Atbash Cipher',
+        description: 'Each letter is replaced with its mirror in the alphabet. A becomes Z, B becomes Y, and so on.',
+        encode: (text) => {
+          return text.split('').map(char => {
+            if (char.match(/[a-z]/)) {
+              return String.fromCharCode(219 - char.charCodeAt(0));
+            }
+            if (char.match(/[A-Z]/)) {
+              return String.fromCharCode(155 - char.charCodeAt(0));
+            }
+            return char;
+          }).join('');
+        },
+        messages: [
+          'Mirror image',
+          'Reverse the alphabet',
+          'Nothing is what it seems',
+          'Crack the mirror code',
+          'Hidden in plain sight'
+        ],
+        hint: 'A=Z, B=Y, C=X... each letter maps to its opposite.'
+      }
     ];
 
     // just state
     let currentLevel = 0;
     let currentMessage = '';
     let currentEncoded = '';
+    let hintsUsed = 0;
+    let score = 0;
 
     // just funcs
     function showScreen(id) {
@@ -298,17 +326,26 @@
         feedback.textContent = '>> DECRYPTED SUCCESSFULLY';
         feedback.className = 'feedback correct';
         setTimeout(() => {
-            currentLevel++;
-            if (currentLevel < levels.length) {
-                loadLevel();
-            } else {
-                alert('You win! All ciphers cracked');
-            }
+          currentLevel++;
+          if (currentLevel < levels.length) {
+            loadLevel();
+          } else {
+            alert('You win! All ciphers cracked');
+          }
         }, 1500);
       } else {
         feedback.textContent = '>> DECRYPTION FAILED — try again';
         feedback.className = 'feedback wrong';
       }
+    }
+
+    function showHint() {
+      const level = levels[currentLevel];
+      const feedback = document.getElementById('feedback');
+      feedback.textContent = '>> HINT: ' + level.hint;
+      feedback.className = 'feedback';
+      feedback.style.color = '#ffaa00';
+      hintsUsed++;
     }
 
     // enter key
