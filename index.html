@@ -1,10 +1,11 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code Breaker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
-      <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Breaker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
     * {
       margin: 0;
       padding: 0;
@@ -83,10 +84,98 @@
       margin-bottom: 24px;
       line-height: 1.2;
     }
+
+    /* Game Screen */
+    .level-badge {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 13px;
+      color: #0a0e17;
+      background: #00d4ff;
+      padding: 4px 12px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    .cipher-name {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 22px;
+      color: #e0e8f0;
+      margin-bottom: 8px;
+    }
+
+    .cipher-description {
+      font-size: 14px;
+      color: #5a7a9a;
+      margin-bottom: 24px;
+    }
+
+    .encrypted-box {
+      background: #111b2e;
+      border: 1px solid #1e3a5f;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 20px;
+      color: #00d4ff;
+      letter-spacing: 2px;
+      word-break: break-all;
+    }
+
+    .encrypted-label {
+      font-size: 11px;
+      color: #5a7a9a;
+      margin-bottom: 8px;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .answer-input {
+      flex: 1;
+      padding: 12px 16px;
+      background: #111b2e;
+      border: 1px solid #1e3a5f;
+      border-radius: 6px;
+      color: #e0e8f0;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .answer-input:focus {
+      border-color: #00d4ff;
+    }
+
+    .answer-input::placeholder {
+      color: #2a4a6a;
+    }
+
+    .feedback {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 14px;
+      margin-bottom: 16px;
+      min-height: 20px;
+    }
+
+    .feedback.correct {
+      color: #00ff88;
+    }
+
+    .feedback.wrong {
+      color: #ff4444;
+    }
   </style>
 </head>
 <body>
-     <div class="screen active" id="title-screen">
+
+  <div class="screen active" id="title-screen">
     <div class="ascii-art">
  ██████╗ ██████╗ ██████╗ ███████╗
 ██╔════╝██╔═══██╗██╔══██╗██╔════╝
@@ -98,17 +187,107 @@
     <h1 class="title">CODE BREAKER</h1>
     <p class="subtitle">[ decrypt the intercepted messages ]</p>
     <p class="description">
-      You've intercepted encrypted transmissions. 
+      You have intercepted encrypted transmissions. 
       Each level is a new cipher, crack them all to prove your skills.
     </p>
     <button class="btn" onclick="startGame()">INITIATE &gt;&gt;</button>
   </div>
 
+  <!-- Game Screen -->
+  <div class="screen" id="game-screen">
+    <div class="level-badge" id="level-badge">LEVEL 1 / 10</div>
+    <h2 class="cipher-name" id="cipher-name">Reverse Cipher</h2>
+    <p class="cipher-description" id="cipher-desc">The message has been written backwards. Reverse it to reveal the original.</p>
+    
+    <p class="encrypted-label">INTERCEPTED MESSAGE:</p>
+    <div class="encrypted-box" id="encrypted-text">!dlrow olleH</div>
+    
+    <div class="input-row">
+      <input type="text" class="answer-input" id="answer-input" placeholder="type your answer..." autocomplete="off">
+      <button class="btn" onclick="checkAnswer()">DECODE</button>
+    </div>
+    
+    <p class="feedback" id="feedback"></p>
+  </div>
+
   <script>
-    function startGame() {
-        //just log
-        console.log('Game started');
+    // just game data
+    const levels = [
+      {
+        name: 'Reverse Cipher',
+        description: 'The message has been written backwards. Reverse it to reveal the original.',
+        encode: (text) => text.split('').reverse().join(''),
+        messages: [
+          'Hello world',
+          'Access granted',
+          'The code is hidden',
+          'Decrypt this now',
+          'System override',
+          'Good job'
+        ]
+      }
+    ];
+
+    // just state
+    let currentLevel = 0;
+    let currentMessage = '';
+    let currentEncoded = '';
+
+    // just funcs
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
     }
+
+    function startGame() {
+      currentLevel = 0;
+      showScreen('game-screen');
+      loadLevel();
+    }
+
+    function loadLevel() {
+      const level = levels[currentLevel];
+      
+      // random message
+      currentMessage = level.messages[Math.floor(Math.random() * level.messages.length)];
+      currentEncoded = level.encode(currentMessage);
+      
+      // update ui
+      document.getElementById('level-badge').textContent = `LEVEL ${currentLevel + 1} / 10`;
+      document.getElementById('cipher-name').textContent = level.name;
+      document.getElementById('cipher-desc').textContent = level.description;
+      document.getElementById('encrypted-text').textContent = currentEncoded;
+      document.getElementById('answer-input').value = '';
+      document.getElementById('feedback').textContent = '';
+      document.getElementById('feedback').className = 'feedback';
+      
+      // focus input
+      document.getElementById('answer-input').focus();
+    }
+
+    function checkAnswer() {
+      const input = document.getElementById('answer-input').value.trim();
+      const feedback = document.getElementById('feedback');
+      
+      if (!input) return;
+      
+      if (input.toLowerCase() === currentMessage.toLowerCase()) {
+        feedback.textContent = '>> DECRYPTED SUCCESSFULLY';
+        feedback.className = 'feedback correct';
+        setTimeout(() => {
+          loadLevel();
+        }, 1500);
+      } else {
+        feedback.textContent = '>> DECRYPTION FAILED — try again';
+        feedback.className = 'feedback wrong';
+      }
+    }
+
+    // enter key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') checkAnswer();
+    });
   </script>
+
 </body>
 </html>
